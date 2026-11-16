@@ -43,3 +43,15 @@ export interface Wedding {
   weddingDate: string;
   venueName?: string;
 }
+
+export interface PublicRsvpDetails {
+  householdId: number;
+  householdName: string;
+  rsvpStatus: 'pending' | 'attending' | 'declined';
+  wedding: {
+    coupleNames: string;
+    weddingDate: string;
+    venueName?: string;
+  } | null;
+  guests: Guest[];
+}

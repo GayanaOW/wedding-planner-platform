@@ -10,6 +10,8 @@ import {
   XCircle,
   ChevronDown,
   ChevronUp,
+  Check,
+  Link2,
 } from 'lucide-react';
 import { Household } from '@/types/wedding';
 import { weddingApi } from '@/services/weddingApi';
@@ -39,6 +41,14 @@ export default function GuestRosterTab({
   const [lastName, setLastName] = useState('');
   const [mealPreference, setMealPreference] = useState('chicken');
   const [dietaryNotes, setDietaryNotes] = useState('');
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
+
+    const handleCopyInviteLink = (token: string) => {
+    const url = `${window.location.origin}/rsvp/${token}`;
+    navigator.clipboard.writeText(url);
+    setCopiedToken(token);
+    setTimeout(() => setCopiedToken(null), 2000);
+    };
 
   const handleCreateHousehold = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,6 +149,22 @@ export default function GuestRosterTab({
                       className="inline-flex items-center gap-1.5 bg-white border border-neutral-200 text-neutral-700 px-3.5 py-1.5 rounded-full text-xs font-medium hover:border-[#D4AF37] hover:text-[#D4AF37] transition"
                     >
                       <Plus className="w-3.5 h-3.5" /> Add Guest
+                    </button>
+                    <button
+                        onClick={() => handleCopyInviteLink(household.token)}
+                        className="inline-flex items-center gap-1.5 bg-white border border-neutral-200 text-neutral-700 px-3.5 py-1.5 rounded-full text-xs font-medium hover:border-[#D4AF37] hover:text-[#D4AF37] transition"
+                        >
+                        {copiedToken === household.token ? (
+                            <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-700">Copied</span>
+                            </>
+                        ) : (
+                            <>
+                            <Link2 className="w-3.5 h-3.5" />
+                            <span>Copy RSVP Link</span>
+                            </>
+                        )}
                     </button>
                     <button
                       onClick={() => setExpandedHousehold(isExpanded ? null : household.id)}

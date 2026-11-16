@@ -1,4 +1,4 @@
-import { Wedding, Household, Table } from '@/types/wedding';
+import { Wedding, Household, Table, PublicRsvpDetails } from '@/types/wedding';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5251/api';
 
@@ -67,4 +67,19 @@ export const weddingApi = {
     request(`/seating/unassign/${seatId}`, {
       method: 'POST',
     }),
+
+  getRsvpByToken: (token: string) =>
+    request<PublicRsvpDetails>(`/rsvp/${encodeURIComponent(token)}`),
+
+  submitRsvp: (
+    token: string,
+    payload: {
+      rsvpStatus: string;
+      guests: { id: number; mealPreference: string; dietaryNotes?: string }[];
+    }
+  ) =>
+    request<{ message: string; rsvpStatus: string }>(`/rsvp/${encodeURIComponent(token)}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    }),  
 };
