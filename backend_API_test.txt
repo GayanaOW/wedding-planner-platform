@@ -1,0 +1,33 @@
+
+POST request to http://localhost:5251/api/weddings
+
+{
+  "plannerId": 1,
+  "coupleNames": "Sarah & Michael",
+  "weddingDate": "2026-09-15",
+  "venueName": "The Grand Hotel"
+}
+
+
+GET request to http://localhost:5251/api/weddings  //verify all weddings
+
+
+
+POST request to http://localhost:5251/api/households  //add guest family
+
+{
+  "weddingId": 1,
+  "coupleNames": "Sarah & Michael",
+  "householdName": "The Johnson Family"
+}
+
+
+POST request to http://localhost:5251/api/guests //add a guest into that family
+
+{
+  "householdId": 1,
+  "firstName": "Robert",
+  "lastName": "Johnson",
+  "mealPreference": "beef",
+  "dietaryNotes": "Gluten-free"
+}
