@@ -31,3 +31,31 @@ POST request to http://localhost:5251/api/guests //add a guest into that family
   "mealPreference": "beef",
   "dietaryNotes": "Gluten-free"
 }
+
+
+Table & Seat Management
+
+
+POST request to http://localhost:5251/api/tables
+
+{
+  "weddingId": 1,
+  "tableName": "Table Alpha",
+  "capacity": 4,
+  "shape": "round",
+  "posX": 100.5,
+  "posY": 200.0
+}
+
+
+
+GET request to http://localhost:5251/api/tables/wedding/1  //verify table with auto generated seats
+
+
+
+POST request to http://localhost:5251/api/seating/assign
+
+{
+  "seatId": 1,
+  "guestId": 1
+}
