@@ -81,5 +81,12 @@ export const weddingApi = {
     request<{ message: string; rsvpStatus: string }>(`/rsvp/${encodeURIComponent(token)}`, {
       method: 'PUT',
       body: JSON.stringify(payload),
-    }),  
+    }), 
+    
+
+    updateTablePosition: (tableId: number, posX: number, posY: number) =>
+    request(`/tables/${tableId}/position`, {
+      method: 'PUT',
+      body: JSON.stringify({ posX: Math.round(posX), posY: Math.round(posY) }),
+    }),
 };

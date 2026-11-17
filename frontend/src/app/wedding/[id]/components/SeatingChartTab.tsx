@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Armchair, UserPlus, UserMinus } from 'lucide-react';
+import { Armchair, UserPlus, UserMinus, Compass, List } from 'lucide-react';
 import { Table, Seat, GuestWithHousehold } from '@/types/wedding';
 import { weddingApi } from '@/services/weddingApi';
+import FloorPlanCanvas from './FloorPlanCanvas';
 
 interface SeatingChartTabProps {
   weddingId: number;
@@ -22,6 +23,8 @@ export default function SeatingChartTab({
   setIsTableModalOpen,
   onRefresh,
 }: SeatingChartTabProps) {
+  const [viewMode, setViewMode] = useState<'floor' | 'list'>('floor');
+
   // Create table modal local state
   const [tableName, setTableName] = useState('');
   const [tableCapacity, setTableCapacity] = useState(8);
@@ -82,7 +85,7 @@ export default function SeatingChartTab({
 
   return (
     <div className="space-y-8">
-      {/* Summary Bar */}
+      {/* Summary Bar + View Mode Switcher */}
       <div className="glass-card rounded-2xl p-6 flex flex-wrap items-center justify-between gap-6">
         <div>
           <h2 className="font-serif text-2xl text-[#1C1C1E]">Reception Floor & Table Plan</h2>
@@ -91,7 +94,35 @@ export default function SeatingChartTab({
           </p>
         </div>
 
-        <div className="flex items-center gap-6 text-sm">
+        <div className="flex flex-wrap items-center gap-6 text-sm">
+          {/* Floor Plan vs List View Toggle */}
+          <div className="inline-flex rounded-full bg-[#FAF9F6] p-1 border border-neutral-200">
+            <button
+              type="button"
+              onClick={() => setViewMode('floor')}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition ${
+                viewMode === 'floor'
+                  ? 'bg-[#1C1C1E] text-white shadow-2xs'
+                  : 'text-neutral-500 hover:text-[#1C1C1E]'
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5" /> Floor Plan
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition ${
+                viewMode === 'list'
+                  ? 'bg-[#1C1C1E] text-white shadow-2xs'
+                  : 'text-neutral-500 hover:text-[#1C1C1E]'
+              }`}
+            >
+              <List className="w-3.5 h-3.5" /> List View
+            </button>
+          </div>
+
+          <div className="h-8 w-px bg-neutral-200 hidden sm:block" />
+
           <div>
             <span className="text-xs uppercase tracking-wider text-neutral-400 block">Seated</span>
             <span className="font-serif text-2xl font-medium text-[#1C1C1E]">
@@ -109,6 +140,7 @@ export default function SeatingChartTab({
         </div>
       </div>
 
+      {/* Main Content: Empty State vs Floor Plan Canvas vs List View */}
       {tables.length === 0 ? (
         <div className="text-center py-20 glass-card rounded-2xl">
           <Armchair className="w-10 h-10 mx-auto text-[#D4AF37] mb-3 stroke-1" />
@@ -123,6 +155,20 @@ export default function SeatingChartTab({
             Create First Table
           </button>
         </div>
+      ) : viewMode === 'floor' ? (
+        <FloorPlanCanvas
+          tables={tables}
+          allGuests={allGuests}
+          onSelectEmptySeat={(seat, tableName) => {
+            setSelectedSeat({ seat, tableName });
+            setSelectedGuestToAssign(
+              unseatedGuests.length > 0 ? unseatedGuests[0].id.toString() : ''
+            );
+            setIsAssignModalOpen(true);
+          }}
+          onUnassignSeat={handleUnassignSeat}
+          onRefresh={onRefresh}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tables.map((table) => {

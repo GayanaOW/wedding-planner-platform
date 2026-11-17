@@ -73,6 +73,23 @@ public class TablesController : ControllerBase
 
         return CreatedAtAction(nameof(GetTablesForWedding), new { weddingId = table.WeddingId }, createdTable);
     }
+
+    // PUT: api/tables/{id}/position
+    [HttpPut("{id}/position")]
+    public async Task<IActionResult> UpdateTablePosition(int id, [FromBody] TablePositionDto dto)
+    {
+        var table = await _context.Tables.FindAsync(id);
+        if (table == null)
+            return NotFound(new { message = "Table not found." });
+
+        table.PosX = dto.PosX;
+        table.PosY = dto.PosY;
+
+        await _context.SaveChangesAsync();
+        return Ok(new { id = table.Id, posX = table.PosX, posY = table.PosY });
+    }
+
+
 }
 
 public class CreateTableDto
@@ -81,6 +98,13 @@ public class CreateTableDto
     public string TableName { get; set; } = string.Empty;
     public int Capacity { get; set; } = 8;
     public string? Shape { get; set; }
+    public double PosX { get; set; }
+    public double PosY { get; set; }
+}
+
+
+public class TablePositionDto
+{
     public double PosX { get; set; }
     public double PosY { get; set; }
 }
